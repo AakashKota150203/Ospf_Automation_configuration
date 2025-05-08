@@ -1,0 +1,74 @@
+# payloads.yaml
+# This file contains Jinja2-rendered XML payloads for configuring Junos devices via REST.
+
+# ─────────────── Interface Configuration ───────────────
+interface_config:
+  template: |
+    <load-configuration action="merge">
+      <configuration>
+        <interfaces>
+          {% for iface in interfaces %}
+          <interface>
+            <name>{{ iface.name }}</name>
+            <unit>
+              <name>0</name>
+              <family>
+                <inet>
+                  <address>
+                    <name>{{ iface.ip }}</name>
+                  </address>
+                </inet>
+              </family>
+            </unit>
+          </interface>
+          {% endfor %}
+        </interfaces>
+      </configuration>
+    </load-configuration>
+
+# ─────────────── OSPF Configuration ───────────────
+ospf_config:
+  template: |
+    <load-configuration action="merge">
+      <configuration>
+        <routing-options>
+          <router-id>{{ router_id }}</router-id>
+        </routing-options>
+        <protocols>
+          <ospf>
+            {%- set areas_seen = [] %}
+            {%- for iface in interfaces %}
+              {%- if iface.ospf_area not in areas_seen %}
+                {%- set _ = areas_seen.append(iface.ospf_area) %}
+                <area>
+                  <name>{{ iface.ospf_area }}</name>
+                  {%- for i in interfaces if i.ospf_area == iface.ospf_area %}
+                  <interface>
+                    <name>{{ i.name }}.0</name>
+                  </interface>
+                  {%- endfor %}
+                </area>
+              {%- endif %}
+            {%- endfor %}
+          </ospf>
+        </protocols>
+      </configuration>
+    </load-configuration>
+
+# ─────────────── Commit Configuration ───────────────
+commit_config:
+  template: |
+    <commit-configuration/>
+
+# ─────────────── OSPF Information Retrival ───────────────
+
+ospf_neighbor: "get-ospf-neighbor-information"
+ospf_interface: "get-ospf-interface-information"
+ospf_route: "get-ospf-route-information"
+ospf_database: "get-ospf-database-information"
+ospf_statistics: "get-ospf-statistics-information"
+ospf_overview: "get-ospf-overview-information"
+
+
+
+

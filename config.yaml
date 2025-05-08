@@ -1,0 +1,137 @@
+# config.yaml
+# Defines all Juniper devices, their access ports, OSPF areas, and interfaces.
+# Reuses common values (IP, credentials) via YAML anchors for maintainability.
+
+# ─────────────── Default Parameters for All Devices ───────────────
+defaults: &device_defaults
+  ip: 66.129.235.200
+  username: jcluser
+  password: Juniper!1
+
+# ─────────────── List of All Devices ───────────────
+devices:
+  - name: vmx1
+    <<: *device_defaults
+    ssh_port: 46009         # SSH (CLI) access
+    netconf_port: 46007     # NETCONF (for PyEZ)
+    port: 46008             # REST API port
+    router-id: &lo0vmx1_ip 10.100.100.1
+    interfaces:
+      - name: ge-0/0/0
+        ip: 10.100.12.1/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/1
+        ip: 10.100.14.1/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/2
+        ip: 10.100.13.1/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/3
+        ip: 10.100.15.1/24
+        ospf_area: 0.0.0.1
+      - name: lo0             # Loopback used as router ID
+        ip: *lo0vmx1_ip
+        ospf_area: 0.0.0.0
+
+  - name: vmx2
+    <<: *device_defaults
+    ssh_port: 46012
+    netconf_port: 46010
+    port: 46011
+    router-id: &lo0vmx2_ip 10.100.100.2
+    interfaces:
+      - name: ge-0/0/0
+        ip: 10.100.12.2/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/1
+        ip: 10.100.23.1/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/2
+        ip: 10.100.24.1/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/3
+        ip: 10.100.26.1/24
+        ospf_area: 0.0.0.2
+      - name: lo0
+        ip: *lo0vmx2_ip
+        ospf_area: 0.0.0.0
+
+  - name: vmx3
+    <<: *device_defaults
+    ssh_port: 46015
+    netconf_port: 46013
+    port: 46014
+    router-id: &lo0vmx3_ip 10.100.100.3
+    interfaces:
+      - name: ge-0/0/0
+        ip: 10.100.34.1/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/1
+        ip: 10.100.23.2/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/2
+        ip: 10.100.13.2/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/4
+        ip: 10.100.35.1/24
+        ospf_area: 0.0.0.1
+      - name: lo0
+        ip: *lo0vmx3_ip
+        ospf_area: 0.0.0.0
+
+  - name: vmx4
+    <<: *device_defaults
+    ssh_port: 46018
+    netconf_port: 46016
+    port: 46017
+    router-id: &lo0vmx4_ip 10.100.100.4
+    interfaces:
+      - name: ge-0/0/0
+        ip: 10.100.34.1/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/1
+        ip: 10.100.14.2/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/2
+        ip: 10.100.24.2/24
+        ospf_area: 0.0.0.0
+      - name: ge-0/0/4
+        ip: 10.100.46.1/24
+        ospf_area: 0.0.0.2
+      - name: lo0
+        ip: *lo0vmx4_ip
+        ospf_area: 0.0.0.0
+
+  - name: vmx5
+    <<: *device_defaults
+    ssh_port: 46021
+    netconf_port: 46019
+    port: 46020
+    router-id: &lo0vmx5_ip 10.100.100.5
+    interfaces:
+      - name: ge-0/0/3
+        ip: 10.100.15.2/24
+        ospf_area: 0.0.0.1
+      - name: ge-0/0/4
+        ip: 10.100.35.2/24
+        ospf_area: 0.0.0.1
+      - name: lo0
+        ip: *lo0vmx5_ip
+        ospf_area: 0.0.0.1
+
+  - name: vmx6
+    <<: *device_defaults
+    ssh_port: 46024
+    netconf_port: 46022
+    port: 46023
+    router-id: &lo0vmx6_ip 10.100.100.6
+    interfaces:
+      - name: ge-0/0/3
+        ip: 10.100.26.2/24
+        ospf_area: 0.0.0.2
+      - name: ge-0/0/4
+        ip: 10.100.46.2/24
+        ospf_area: 0.0.0.2
+      - name: lo0
+        ip: *lo0vmx6_ip
+        ospf_area: 0.0.0.2
