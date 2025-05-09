@@ -15,26 +15,29 @@ from rest_client import send_payload, commit_configuration, get_rpc_output
 # Push Payloads and Commit for All Devices
 # ───────────────────────────────────────────────────────────────
 
-# for i in range(1, len(devices) + 1):
-#     name = f"vmx{i}"
-#     device = devices[name]
-#
-#
-#     print(f"\n{'='*60}")
-#     print(f"Starting configuration push for {name}")
-#     print(f"{'='*60}")
-#
-#     # Send interface configuration
-#     print(f"\nSending Interface Config to {name}")
-#     send_payload(device, interface_payloads[name])
-#
-#     # Send OSPF configuration
-#     print(f"\nSending OSPF Config to {name}")
-#     send_payload(device, ospf_payloads[name])
-#
-#     # Commit configuration
-#     print(f"\nCommitting Config on {name}")
-#     commit_configuration(device)
-#
-#     print(f"\nFinished with {name}\n{'-'*60}")
+def configure_all_devices():
+    """
+    Configures interfaces and OSPF on all devices, commits them,
+    and prints a summary per device. Returns a list of summary results.
+    """
+    summary = []
 
+    for i in range(1, len(devices) + 1):
+        name = f"vmx{i}"
+        device = devices[name]
+
+        try:
+            send_payload(device, interface_payloads[name])
+            send_payload(device, ospf_payloads[name])
+            commit_configuration(device)
+
+            result = f"{name} → Configured successfully ✅"
+        except Exception as e:
+            result = f"{name} → Configuration failed ❌ ({e})"
+
+        print(result)
+        summary.append(result)
+
+    return summary
+
+a = get_rpc_output(devices[0], )

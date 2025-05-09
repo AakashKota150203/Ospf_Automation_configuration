@@ -68,7 +68,3 @@ ospf_route: "get-ospf-route-information"
 ospf_database: "get-ospf-database-information"
 ospf_statistics: "get-ospf-statistics-information"
 ospf_overview: "get-ospf-overview-information"
-
-
-
-
